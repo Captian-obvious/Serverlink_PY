@@ -45,6 +45,11 @@ class SL_Client:
                 "valid": ["cinfo"],
                 "arguments": "None"
             },
+            "disconnect": {
+                "desc": "Disconnects from the ssh connection provided by connect",
+                "valid": ["dc","disconnect","discon","disconn"],
+                "arguments":"None"
+            },
             "info": {
                 "desc": "displays information about the client",
                 "valid": ["info"],
@@ -235,6 +240,12 @@ class SL_Client:
             if len(args)<1:
                 self.get_connection_info();
             ##endif
+        elif cmd=="disconnect":
+            if len(args)<1:
+                self.disconnect();
+            else:
+                self.print_err("Too many arguments provided, process exited.");
+            ##endif
         elif cmd=="config":
             views.configMenu();
         ##endif
@@ -243,7 +254,7 @@ class SL_Client:
         print(f"SL: {output}");
     ##end
     def print_err(self,output):
-        print(f"SL Error: {output}");
+        print(f"\033[1;31mSL: {output}\033[0m");
     ##end
 ##end
 

@@ -16,19 +16,19 @@ def createWinADFIfNotPresent():
     ##endif
 ##end
 def createLinuxADFIfNotPresent():
-    if (not dirExists('~/.local/share/Serverlink')):
-        os.mkdir('~/.local/share/Serverlink');
+    if (not dirExists('~/Serverlink')):
+        os.mkdir('~/Serverlink');
     ##endif
 ##end
 def createCFGFolderIfNotPresent():
     os_name=platform.system();
     if (os_name=='Linux'):
         createLinuxADFIfNotPresent();
-        if (dirExists('~/.local/share/Serverlink/cfg')):
-           return '~/.local/share/Serverlink/cfg';
+        if (dirExists('~/.local/share/Serverlink/conf')):
+           return '~/.local/share/Serverlink/conf';
         else:
-            os.mkdir('~/.local/share/Serverlink/cfg');
-            return '~/.local/share/Serverlink/cfg';
+            os.mkdir('~/.local/share/Serverlink/conf');
+            return '~/.local/share/Serverlink/conf';
         ##endif
     elif (os_name=='Windows'):
         appDataPath=os.getenv('APPDATA');
