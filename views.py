@@ -8,8 +8,8 @@ def dirExists(path):
 def createWinADFIfNotPresent():
     appDataPath=os.getenv('APPDATA');
     if (appDataPath!=None):
-        if (not dirExists(f'{appDataPath}/Serverlink')):
-            os.mkdir(f'{appDataPath}/Serverlink');
+        if (not dirExists(f'{appDataPath}/.serverlink')):
+            os.mkdir(f'{appDataPath}/.serverlink');
         ##endif
     else:
         print('Failed to find %APPDATA% directory..');
@@ -17,7 +17,7 @@ def createWinADFIfNotPresent():
 ##end
 def createLinuxADFIfNotPresent():
     home_directory=os.path.expanduser('~');
-    directory_path=os.path.join(home_directory,'Serverlink');
+    directory_path=os.path.join(home_directory,'.serverlink');
     if (not dirExists(directory_path)):
         os.mkdir(directory_path);
     ##endif
@@ -26,7 +26,7 @@ def createCFGFolderIfNotPresent():
     os_name=platform.system();
     if (os_name=='Linux'):
         home_directory=os.path.expanduser('~');
-        directory_path=os.path.join(home_directory,'Serverlink');
+        directory_path=os.path.join(home_directory,'.serverlink');
         createLinuxADFIfNotPresent();
         conf_path=os.path.join(directory_path,'conf');
         if (dirExists(conf_path)):
