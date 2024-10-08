@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import json,os,platform,re,socket,sys,threading,time;
 import tkinter as tk;
 from tkinter import ttk;
@@ -17,19 +16,24 @@ def createWinADFIfNotPresent():
     ##endif
 ##end
 def createLinuxADFIfNotPresent():
-    if (not dirExists('~/Serverlink')):
-        os.mkdir('~/Serverlink');
+    home_directory=os.path.expanduser('~');
+    directory_path=os.path.join(home_directory,'Serverlink');
+    if (not dirExists(directory_path)):
+        os.mkdir(directory_path);
     ##endif
 ##end
 def createCFGFolderIfNotPresent():
     os_name=platform.system();
     if (os_name=='Linux'):
+        home_directory=os.path.expanduser('~');
+        directory_path=os.path.join(home_directory,'Serverlink');
         createLinuxADFIfNotPresent();
-        if (dirExists('~/Serverlink/conf')):
-           return '~/Serverlink/conf';
+        conf_path=os.path.join(directory_path,'conf');
+        if (dirExists(conf_path)):
+           return conf_path;
         else:
-            os.mkdir('~/Serverlink/conf');
-            return '~/Serverlink/conf';
+            os.mkdir(conf_path);
+            return conf_path;
         ##endif
     elif (os_name=='Windows'):
         appDataPath=os.getenv('APPDATA');
