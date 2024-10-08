@@ -173,6 +173,7 @@ def configMenu():
                 'fieldforeground':"#fa0",
                 'indicatorbackground':"#fff",
                 'indicatorforeground':"#0f0",
+                'selectcolor':"#333",
                 'padding':5,
             },
         },
