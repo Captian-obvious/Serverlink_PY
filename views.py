@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json,os,platform,re,socket,sys,threading,time;
 import tkinter as tk;
 from tkinter import ttk;
@@ -24,11 +25,11 @@ def createCFGFolderIfNotPresent():
     os_name=platform.system();
     if (os_name=='Linux'):
         createLinuxADFIfNotPresent();
-        if (dirExists('~/.local/share/Serverlink/conf')):
-           return '~/.local/share/Serverlink/conf';
+        if (dirExists('~/Serverlink/conf')):
+           return '~/Serverlink/conf';
         else:
-            os.mkdir('~/.local/share/Serverlink/conf');
-            return '~/.local/share/Serverlink/conf';
+            os.mkdir('~/Serverlink/conf');
+            return '~/Serverlink/conf';
         ##endif
     elif (os_name=='Windows'):
         appDataPath=os.getenv('APPDATA');
@@ -77,7 +78,7 @@ def configMenu():
     if (cfgdat['fg']!="default"):
         fgColor=cfgdat['fg'];
     ##endif
-    styles.theme_create('Light',parent="default",settings={
+    styles.theme_create('Light',parent="clam",settings={
         'TFrame':{
             'configure':{
                 "background":"#fff",
@@ -124,7 +125,7 @@ def configMenu():
             },
         },
     });
-    styles.theme_create('Dark',parent="default",settings={
+    styles.theme_create('Dark',parent="clam",settings={
         'TFrame':{
             'configure':{
                 "background":"#fff",
@@ -164,6 +165,8 @@ def configMenu():
             'configure':{
                 'background':"#333",
                 'foreground':"#fa0",
+                'fieldbackground':"333",
+                'fieldforeground':"#fa0",
                 'indicatorbackground':"#fff",
                 'indicatorforeground':"#0f0",
                 'padding':5,

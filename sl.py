@@ -4,7 +4,9 @@ import views;
 import subprocess as sub;
 #Prefix System
 cmd_prefix="/";
+global shell_type;
 shell_type="unknown";
+ver="4.35.0";
 user_agent_stub="SL/OS";
 if platform.system()=='Windows':
     cmd_prefix="> ";
@@ -15,6 +17,22 @@ elif platform.system()=='Linux':
     shell_type="Unix-like";
     user_agent_stub="SL/Linux";
 ##endif
+def get_referring_shell():
+    if os.name == 'nt':  # Windows
+        ps_module_path=os.getenv('PSModulePath');
+        if ps_module_path:
+            return "WinPS";
+        else:
+            comspec=os.getenv('COMSPEC');
+        if comspec and 'cmd.exe' in comspec:
+            return "WinCMD";
+        else:
+            return "unknown";
+        ##endif
+    elif os.name == 'posix':  # Unix-like
+        return "Unix-like";
+    ##endif
+##end
 #Serverlink Client
 class SL_Client:
     def __init__(self):
@@ -62,7 +80,7 @@ class SL_Client:
             },
         };
         self.info={
-            "version":"3.48",
+            "version":ver,
             "sshVer":"OpenSSH-2",
             "shell":shell_type,
         };
@@ -86,7 +104,7 @@ class SL_Client:
             ##end
         ##endif
     ##end
-    def connect(self,host,port=22,credentials=""):
+    def connect(self,host,port=80,credentials=""):
         global usr,hostname;
         usr="";
         hostname=host;
@@ -178,6 +196,8 @@ class SL_Client:
             time.sleep(1);
             self.print_info(f"Disconnected from https://{self.ip}.");
             self.isConnected=False;
+        else:
+            self.print_err("Not connected to a server.");
         ##endif
     ##end
     def begin_shell(self,hostname,port,credentials):
@@ -186,7 +206,7 @@ class SL_Client:
     def get_command(self,cmd):
         result=""
         for cmd_name,cmd_info in self.commands.items():
-            if cmd in cmd_info["valid"]:
+            if cmd.lower() in cmd_info["valid"]:
                 result=cmd_name;
                 break;
             ##endif
@@ -195,7 +215,7 @@ class SL_Client:
     ##end
     def initialize(self):
         if not self.isInitialized:
-            self.print_info("Serverlink initializing.");
+            self.print_info(f"Serverlink v{ver} ({platform.machine()}) on {platform.system()}");
             self.isInitialized=True;
             self.isConnected=False;
             self.isConnecting=False;
@@ -208,8 +228,8 @@ class SL_Client:
         try:
             socket.gethostbyname(hostname);
             return True;
-        except socket.error:
-            self.print_err("Unable to get address info");
+        except socket.error as e:
+            self.print_err(f"Unable to get address info: {e}");
             return False;
         ##endif
     ##end
@@ -259,6 +279,7 @@ class SL_Client:
 ##end
 
 def main(argc:int,argv:list[str]):
+    shell_type=get_referring_shell();
     slc=SL_Client();
     slc.initialize();
     magic_exit_code=False;
@@ -285,7 +306,7 @@ def main(argc:int,argv:list[str]):
                     slc.run_cmd(cmdname,args);
                 ##endif
             else:
-                print("Invalid command.");
+                print("\033[1;31mInvalid command.\033[0m");
             ##endif
         ##end
     elif argc > 1:
