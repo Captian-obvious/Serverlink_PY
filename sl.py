@@ -333,6 +333,7 @@ def main(argc:int,argv:list[str]):
                     slc.run_cmd(cmdname,args);
                     if slc.isVisualMode:
                         gui.start_ui(slc.page);
+                        slc.isVisualMode=False;
                     ##endif
                 ##endif
             else:
