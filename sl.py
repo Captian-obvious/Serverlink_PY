@@ -40,6 +40,7 @@ class SL_Client:
         self.isConnecting=False;
         self.isConnected=False;
         self.isInitialized=False;
+        self.isVisualMode=False;
         self.isCLIInitialized=False;
         self.currentUrl="";
         self.sshConnection=None;
@@ -47,6 +48,7 @@ class SL_Client:
         self.curr_path="";
         self.curr_user="";
         self.creds="";
+        self.page="";
         self.sl_user_agent="SL-Client/1.0 Mozilla/5.0 ("+user_agent_stub+") AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36";
         self.commands={
             "connect": {
@@ -73,6 +75,11 @@ class SL_Client:
                 "desc": "displays information about the client",
                 "valid": ["info"],
                 "arguments": "None"
+            },
+            "visual": {
+                "desc":"enters visual mode (not fully implemented)",
+                "valid":["visual","gui","vis"],
+                "arguments":"<page (opt)>"
             },
             "exit": {
                 "desc": "exits the CLI",
@@ -146,7 +153,7 @@ class SL_Client:
     def initialize_ssh(self,hostname,port,usr):
         cmd=f"ssh {usr}@{hostname}" if usr!="" else f"ssh {hostname}";
         try:
-            self.sshConnection=sub.Popen(cmd,shell=True,stdin=sub.PIPE,stdout=subprocess.PIPE, stderr=sub.PIPE);
+            self.sshConnection=sub.Popen(cmd,shell=True,stdin=sub.PIPE,stdout=sub.PIPE, stderr=sub.PIPE);
         except Exception as e:
             self.print_err("Failed to initialize SSH connection");
             return 1;
@@ -268,7 +275,24 @@ class SL_Client:
                 self.print_err("Too many arguments provided, process exited.");
             ##endif
         elif cmd=="config":
-            views.configMenu();
+            if len(args)<1:
+                self.isVisualMode=True;
+                self.page="conf";
+            else:
+                self.print_err("Too many arguments provided, process exited.");
+            ##endif
+        elif cmd=="visual":
+            if (len(args)<1):
+                self.isVisualMode=True;
+                self.print_info("Press <ENTER> to enter visual mode.");
+                self.page="index";
+            elif(len(args)<2):
+                self.isVisualMode=True;
+                self.page=args[0];
+                self.print_info("Press <ENTER> to enter visual mode.");
+            else:
+                self.print_err("Too many arguments provided!");
+            ##endif
         ##endif
     ##end
     def print_info(self,output):
@@ -282,7 +306,9 @@ class SL_Client:
 def main(argc:int,argv:list[str]):
     shell_type=get_referring_shell();
     slc=SL_Client();
+    gui=views.SL_GUI();
     slc.initialize();
+    gui.init(slc);
     magic_exit_code=False;
     if argc < 2:
         print("Welcome to Serverlink, what would you like to do?");
@@ -305,6 +331,9 @@ def main(argc:int,argv:list[str]):
                 else:
                     args.pop(0)
                     slc.run_cmd(cmdname,args);
+                    if slc.isVisualMode:
+                        gui.start_ui(slc.page);
+                    ##endif
                 ##endif
             else:
                 print("\033[1;31mInvalid command.\033[0m");
