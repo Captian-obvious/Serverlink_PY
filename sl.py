@@ -187,7 +187,7 @@ class SL_Client:
             time.sleep(0.9);
             while self.isConnected and self.sshConnection and self.sshConnection.poll() is None:
                 output=self.sshConnection.stdout;
-                for line in output.splitlines():
+                for line in output:
                     print(line);
                 ##end
                 cmd=input(cmd_prefix);
