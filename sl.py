@@ -10,11 +10,11 @@ ver="4.35.0";
 user_agent_stub="SL/OS";
 if platform.system()=='Windows':
     cmd_prefix="> ";
-    shell_type="WinCMD";
+    #shell_type="WinCMD";
     user_agent_stub="SL/Windows";
 elif platform.system()=='Linux':
     cmd_prefix="$ ";
-    shell_type="Unix-like";
+    #shell_type="Unix-like";
     user_agent_stub="SL/Linux";
 ##endif
 def get_referring_shell():
