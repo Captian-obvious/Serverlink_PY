@@ -24,10 +24,11 @@ def get_referring_shell():
             return "WinPS";
         else:
             comspec=os.getenv('COMSPEC');
-        if comspec and 'cmd.exe' in comspec:
-            return "WinCMD";
-        else:
-            return "unknown";
+            if comspec and 'cmd.exe' in comspec:
+                return "WinCMD";
+            else:
+                return "unknown";
+            ##endif
         ##endif
     elif os.name == 'posix':  # Unix-like
         return "Unix-like";
